@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f5f3ed" />
+  <meta name="description" content="拾光，记录技术实践、日常观察与灵感片段。" />
+  <title>拾光 · 个人博客</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --paper:#f5f3ed; --ink:#20231f; --muted:#777b70; --line:#d8d7cd; --accent:#b6ce55; --soft:#e9e8df; --card:#eeece4; --serif:'Noto Serif SC', Georgia, serif; --sans:'DM Sans','Noto Serif SC',sans-serif; --mono:'DM Mono',monospace; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); transition:background .3s,color .3s; }
+    body.dark { --paper:#171a18; --ink:#e6e6db; --muted:#989b8f; --line:#383c36; --accent:#c9e567; --soft:#222622; --card:#202420; }
+    a { color:inherit; text-decoration:none; }
+    button { color:inherit; font:inherit; }
+    .shell { max-width:1160px; padding:0 42px; margin:auto; }
+    .topbar { height:78px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; }
+    .brand { display:flex; gap:12px; align-items:center; font-weight:700; letter-spacing:.02em; }
+    .brand-mark { width:27px;height:27px;border-radius:50%; background:var(--ink); color:var(--paper); display:grid;place-items:center;font:12px var(--mono); }
+    .nav { display:flex; align-items:center; gap:29px; font-size:13px; color:var(--muted); }
+    .nav a:hover,.nav button:hover { color:var(--ink); }
+    .nav button { background:none;border:0;padding:0;cursor:pointer;color:var(--muted); }
+    .eyebrow { font:11px var(--mono); letter-spacing:.13em; color:var(--muted); text-transform:uppercase; }
+    .hero { padding:75px 0 53px; display:grid; grid-template-columns:1fr 260px; gap:50px; border-bottom:1px solid var(--line); }
+    .hero h1 { margin:18px 0 18px; font:500 clamp(48px,7vw,78px)/1.12 var(--serif); letter-spacing:-.055em; }
+    .hero h1 span { color:#879e37; }
+    body.dark .hero h1 span { color:var(--accent); }
+    .hero-copy { max-width:570px; color:var(--muted); line-height:1.9; font-size:14px; }
+    .hero-aside { align-self:end; border-left:1px solid var(--line); padding-left:22px; margin-bottom:5px; }
+    .hero-aside .big { font:40px var(--mono); letter-spacing:-.07em; }
+    .hero-aside p { color:var(--muted); font-size:12px; line-height:1.8; margin:5px 0 0; }
+    .introline { display:flex; align-items:center; gap:10px; margin-top:24px; font:11px var(--mono); color:var(--muted); }
+    .dot { width:7px;height:7px;border-radius:50%;background:#8aa53c;box-shadow:0 0 0 4px #8aa53c20; }
+    .archive { display:grid; grid-template-columns:minmax(0,1fr) 245px; gap:64px; padding:39px 0 90px; }
+    .archive-head { display:flex; align-items:end; justify-content:space-between; border-bottom:1px solid var(--line); padding-bottom:16px; }
+    .archive-head h2 { margin:7px 0 0; font:500 29px var(--serif); letter-spacing:-.03em; }
+    .archive-count { color:var(--muted);font:11px var(--mono); }
+    .controls { display:flex; align-items:center; gap:10px; padding:18px 0 12px; }
+    .search { flex:1; min-width:90px; display:flex; gap:8px; align-items:center; border-bottom:1px solid var(--line); padding:8px 0; color:var(--muted); }
+    .search input { border:0;outline:0;background:transparent;color:var(--ink);font:12px var(--sans);width:100%; }
+    .search input::placeholder { color:var(--muted); }
+    .year-select { border:1px solid var(--line); background:transparent; color:var(--ink); border-radius:3px; padding:8px 10px; font:11px var(--mono); cursor:pointer; }
+    .post-list { list-style:none;margin:8px 0 0;padding:0; }
+    .post { display:grid; grid-template-columns:90px 1fr 16px; gap:13px; align-items:start; padding:20px 8px; margin:0 -8px; border-bottom:1px solid var(--line); cursor:pointer; transition:background .2s,padding .2s; }
+    .post:hover { background:var(--soft);padding-left:14px;padding-right:14px; }
+    .post-date { font:11px var(--mono); color:var(--muted); padding-top:5px; }
+    .post-title { font:500 17px/1.55 var(--serif); }
+    .post-summary { margin-top:5px; color:var(--muted); font-size:12px; line-height:1.7; }
+    .post-meta { margin-top:10px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .tag { color:#777d67; font:10px var(--mono); letter-spacing:.04em; }
+    body.dark .tag { color:#bfce89; }
+    .post-arrow { color:var(--muted); font:14px var(--mono); padding-top:3px; transition:transform .2s; }
+    .post:hover .post-arrow { transform:translate(2px,-2px); color:var(--ink); }
+    .empty { display:none;padding:36px 0;color:var(--muted);font-size:13px; }
+    .sidebar { padding-top:5px; }
+    .side-block { border-top:1px solid var(--line); padding:17px 0 22px; }
+    .side-block h3 { margin:0 0 14px; font:10px var(--mono); letter-spacing:.1em; color:var(--muted); text-transform:uppercase; }
+    .profile { display:flex; gap:12px; align-items:center; }
+    .avatar { width:43px;height:43px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;font:17px var(--serif); }
+    .profile strong { display:block;font:500 14px var(--serif); }
+    .profile small { display:block;margin-top:4px;color:var(--muted);font:10px var(--mono); }
+    .side-copy { color:var(--muted);font-size:12px;line-height:1.85;margin:12px 0 0; }
+    .years { display:flex; flex-direction:column; gap:0; }
+    .year-link { display:flex;justify-content:space-between;align-items:center;padding:9px 1px;border-bottom:1px solid var(--line);font:12px var(--mono);color:var(--muted);cursor:pointer; }
+    .year-link:hover,.year-link.active { color:var(--ink); }
+    .year-link.active::before { content:'↳';color:#839b34;margin-right:7px; }
+    .year-link .year-name { margin-right:auto; }
+    .year-link .year-total { font-size:10px; }
+    .quote { padding:14px;background:var(--soft);font:14px/1.9 var(--serif); }
+    .quote small { display:block;margin-top:8px;font:10px var(--mono);color:var(--muted); }
+    .footer { border-top:1px solid var(--line); display:flex;justify-content:space-between;padding:21px 0 30px;color:var(--muted);font:10px var(--mono); }
+    .modal-backdrop { position:fixed;inset:0;background:#1119;display:none;align-items:center;justify-content:center;padding:22px;z-index:5;backdrop-filter:blur(5px); }
+    .modal-backdrop.open { display:flex; }
+    .modal { width:min(660px,100%);max-height:85vh;overflow:auto;background:var(--paper);border:1px solid var(--line);padding:34px 38px;box-shadow:0 22px 80px #0003;animation:rise .22s ease-out; }
+    @keyframes rise { from { opacity:0;transform:translateY(10px); } to { opacity:1;transform:none; } }
+    .modal-top { display:flex;justify-content:space-between;align-items:center; }
+    .close { border:1px solid var(--line);background:none;width:30px;height:30px;border-radius:50%;cursor:pointer;color:var(--muted); }
+    .modal h2 { font:500 30px/1.45 var(--serif);margin:27px 0 8px; }
+    .modal-date { color:var(--muted);font:11px var(--mono); }
+    .modal-body { font:14px/2 var(--serif);margin-top:28px;color:var(--ink); }
+    .modal-body p { margin:0 0 18px; }
+    .modal-body blockquote { margin:22px 0;padding:2px 0 2px 16px;border-left:2px solid var(--accent);color:var(--muted); }
+    @media(max-width:760px) { .shell{padding:0 22px}.topbar{height:65px}.nav{gap:15px}.nav a:nth-child(2){display:none}.hero{grid-template-columns:1fr;gap:28px;padding:52px 0 34px}.hero-aside{border-left:0;border-top:1px solid var(--line);padding:16px 0 0;display:flex;gap:12px;align-items:center}.hero-aside p{margin:0}.hero-aside .big{font-size:30px}.archive{grid-template-columns:1fr;gap:45px;padding-top:29px}.sidebar{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}.side-block:first-child{grid-column:1/-1}.post{grid-template-columns:74px 1fr 14px;gap:9px;padding:16px 4px}.post-title{font-size:15px}.modal{padding:26px 23px}.footer{gap:14px;line-height:1.8} }
+    @media(max-width:430px){.shell{padding:0 17px}.nav{gap:12px;font-size:12px}.hero h1{font-size:48px}.sidebar{grid-template-columns:1fr}.side-block:first-child{grid-column:auto}.post{grid-template-columns:1fr 14px}.post-date{grid-column:1/-1;padding:0}.post-title-wrap{grid-column:1}.post-arrow{grid-column:2;grid-row:2}.archive-head h2{font-size:25px}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="拾光首页"><span class="brand-mark">拾</span><span>拾光 / NOTES</span></a>
+      <nav class="nav" aria-label="主导航"><a href="#archive">文章</a><a href="#about">关于</a><a href="#archive">归档</a><button id="themeToggle" aria-label="切换明暗主题">◐</button></nav>
+    </header>
+    <main id="top">
+      <section class="hero">
+        <div><div class="eyebrow">个人记录 · 持续更新</div><h1>把日子写成<br><span>一束光。</span></h1><p class="hero-copy">这里收集做过的事、想明白的片刻，以及还没想明白的问题。关于技术，也关于路上经过的风景。</p><div class="introline"><span class="dot"></span><span>慢慢写，认真生活</span><span>·</span><span>EST. 2024</span></div></div>
+        <aside class="hero-aside"><div class="big" id="heroCount">08</div><p>篇短札<br>仍在继续生长</p></aside>
+      </section>
+      <section class="archive" id="archive">
+        <div class="main-col">
+          <div class="archive-head"><div><div class="eyebrow">02 / Lookback</div><h2>时间留下的字</h2></div><div class="archive-count"><span id="visibleCount">08</span> NOTES</div></div>
+          <div class="controls"><label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="搜索标题、摘要或标签" aria-label="搜索文章" /></label><select id="yearFilter" class="year-select" aria-label="按年份筛选"><option value="all">全部年份</option></select></div>
+          <ul class="post-list" id="postList"></ul><div class="empty" id="emptyState">没有找到这篇记录。换个词再试试？</div>
+        </div>
+        <aside class="sidebar" id="about">
+          <section class="side-block"><h3>写字的人 / About</h3><div class="profile"><div class="avatar">拾</div><div><strong>一位路上的记录者</strong><small>curious by nature</small></div></div><p class="side-copy">偏爱把复杂的事情理清楚，也喜欢在熟悉的路上发现新东西。写代码、读书、记录生活。</p></section>
+          <section class="side-block"><h3>按年份 / Years</h3><div class="years" id="yearLinks"></div></section>
+          <section class="side-block"><h3>偶尔想起 / A note</h3><div class="quote">“慢一点，没关系。<br>看见正在发生的事。”<small>— 写给自己的便签</small></div></section>
+        </aside>
+      </section>
+    </main>
+    <footer class="footer"><span>© 2026 拾光 · 留一点空白</span><span>用好奇心，继续向前 ↗</span></footer>
+  </div>
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><article class="modal"><div class="modal-top"><span class="eyebrow">FIELD NOTE / <span id="modalNumber">01</span></span><button class="close" id="closeModal" aria-label="关闭">×</button></div><h2 id="modalTitle"></h2><div class="modal-date" id="modalDate"></div><div class="modal-body" id="modalBody"></div></article></div>
+  <script>
+    // 示例文章集中放在这里，替换标题、摘要、日期与正文即可写入自己的内容。
+    const posts = [
+      { date:'2026-10-18', title:'把重复的工作交给一段小脚本', summary:'从一个总要手动核对的表格开始，试着把规则写清楚。', tags:['自动化','随笔'], body:['最初只是想少做几次重复操作。后来发现，真正省时间的不是那几次点击，而是把“我平时怎么判断”写成别人也能看懂的规则。','先列出输入、输出和例外情况，再让脚本做最稳定的那一段。剩下需要人判断的地方，清楚地标出来。','工具不需要很大。它只要让下一次开始时，少一点犹豫。'] },
+      { date:'2026-09-26', title:'给本地知识库留一条回家的路', summary:'文件会移动，服务会重启，笔记要怎样才能被可靠地找回来？', tags:['知识管理','工程'], body:['做知识整理时，我总会先问：如果明天换一台机器，这些东西还能不能找回来？','所以我把源文件、索引和处理记录分开保存，让每一步都能重新来过。索引可以重建，原文和出处则要好好保留。','可恢复，比看起来聪明更重要。'] },
+      { date:'2026-08-09', title:'一个星期，读完一本没读完的书', summary:'书签停在第三章很久。某个周末，我重新从那一页开始。', tags:['阅读','生活'], body:['搁置很久的书，重读时并没有想象中那么陌生。纸页间夹着的车票还在，旁边的铅笔线也还在。','过去的自己在这里停下来，现在的自己又从这里出发。','原来阅读也有归档：记住的句子，忘掉的章节，还有下一次翻开时的心情。'] },
+      { date:'2026-07-14', title:'调试到深夜时，先去倒杯水', summary:'排查问题的过程里，休息不是暂停，而是让观察重新变清楚。', tags:['工作方法','随笔'], body:['有些问题越盯越像一团线。屏幕没有变，日志也没有变，变的是眼睛开始跳过熟悉的细节。','我现在会先离开桌面几分钟。倒水、走到窗边，再回来从第一条输入重新看。','很多时候，问题还在那里。但它终于又变成了可以描述、可以验证的一件事。'] },
+      { date:'2026-06-02', title:'为一个小页面，认真选了两种字体', summary:'字形、间距和留白，都在悄悄决定阅读的速度。', tags:['设计','前端'], body:['页面做完功能以后，我常常会留一会儿时间给字体。不是为了追求特别，而是希望文字读起来舒服。','标题要有一点停顿，正文要足够清楚。中英混排时，数字也别突然挤进另一种节奏里。','这些细小的选择，最后都会变成页面说话的语气。'] },
+      { date:'2025-12-21', title:'冬至，给自己列一张不太着急的清单', summary:'有些事值得做，有些事也可以等到想清楚再说。', tags:['生活','年末'], body:['年底的清单很容易写得很长。我试着把它缩短，只留下几件此刻真正想做的事。','散步、整理旧照片、把拖了很久的说明文档写完。每件事都不大，但都能让我在新的一周里轻一点。','天黑得早，也就早点回家。'] },
+      { date:'2025-09-07', title:'把一张流程图画给未来的自己', summary:'三个月后的我，最好还能看懂今天为什么这样设计。', tags:['工程','记录'], body:['设计过程最容易丢失的，是当时做决定的理由。图画出来以后，我又在旁边补了几句：哪些数据从哪里来，哪些步骤只是展示，哪些地方真的会执行。','过几个月再回来时，这几句话比漂亮的框更有用。','记录不是为了证明自己记得，而是为了允许自己忘记。'] },
+      { date:'2024-11-11', title:'从这里开始，写一些小事', summary:'先不规定更新频率。想起来的时候，就留下一点痕迹。', tags:['开篇','生活'], body:['这个角落从一张空白纸开始。','我想写些做过的东西，也想写些还没整理好的念头。技术文章也好，路上的观察也好，重要的是留下它们经过这里的痕迹。','那就从今天开始。'] }
+    ];
+    const formatDate = d => d.slice(2).replaceAll('-','.');
+    const years = [...new Set(posts.map(p=>p.date.slice(0,4)))].sort((a,b)=>b-a);
+    const list = document.getElementById('postList');
+    const search = document.getElementById('searchInput');
+    const yearFilter = document.getElementById('yearFilter');
+    const yearLinks = document.getElementById('yearLinks');
+    years.forEach(y=>{yearFilter.insertAdjacentHTML('beforeend',`<option value="${y}">${y}</option>`);yearLinks.insertAdjacentHTML('beforeend',`<button class="year-link" data-year="${y}"><span class="year-name">${y}</span><span class="year-total">${posts.filter(p=>p.date.startsWith(y)).length.toString().padStart(2,'0')}</span></button>`)});
+    function render(){
+      const q=search.value.trim().toLowerCase(), y=yearFilter.value;
+      const filtered=posts.filter(p=>(y==='all'||p.date.startsWith(y))&&(!q||[p.title,p.summary,...p.tags].join(' ').toLowerCase().includes(q)));
+      list.innerHTML=filtered.map(p=>`<li class="post" tabindex="0" role="button" data-date="${p.date}" data-title="${p.title}"><div class="post-date">${formatDate(p.date)}</div><div class="post-title-wrap"><div class="post-title">${p.title}</div><div class="post-summary">${p.summary}</div><div class="post-meta">${p.tags.map(t=>`<span class="tag"># ${t}</span>`).join('')}</div></div><span class="post-arrow">↗</span></li>`).join('');
+      document.getElementById('visibleCount').textContent=filtered.length.toString().padStart(2,'0');
+      document.getElementById('emptyState').style.display=filtered.length?'none':'block';
+      document.querySelectorAll('.year-link').forEach(b=>b.classList.toggle('active',b.dataset.year===y));
+      document.getElementById('heroCount').textContent=posts.length.toString().padStart(2,'0');
+    }
+    function openPost(post){document.getElementById('modalTitle').textContent=post.title;document.getElementById('modalDate').textContent=`${post.date}  ·  ${post.tags.join(' / ')}`;document.getElementById('modalNumber').textContent=String(posts.indexOf(post)+1).padStart(2,'0');document.getElementById('modalBody').innerHTML=post.body.map((p,i)=>i===1&&post.body.length>2?`<blockquote>${p}</blockquote>`:`<p>${p}</p>`).join('');document.getElementById('modalBackdrop').classList.add('open');document.body.style.overflow='hidden';document.getElementById('closeModal').focus();}
+    function closePost(){document.getElementById('modalBackdrop').classList.remove('open');document.body.style.overflow='';}
+    search.addEventListener('input',render);yearFilter.addEventListener('change',render);
+    yearLinks.addEventListener('click',e=>{const b=e.target.closest('[data-year]');if(b){yearFilter.value=yearFilter.value===b.dataset.year?'all':b.dataset.year;render();document.getElementById('archive').scrollIntoView({behavior:'smooth'});}});
+    list.addEventListener('click',e=>{const item=e.target.closest('.post');if(item){const p=posts.find(x=>x.date===item.dataset.date&&x.title===item.dataset.title);if(p)openPost(p);}});
+    list.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.target.click();}});
+    document.getElementById('closeModal').addEventListener('click',closePost);
+    document.getElementById('modalBackdrop').addEventListener('click',e=>{if(e.target.id==='modalBackdrop')closePost();});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closePost();});
+    document.getElementById('themeToggle').addEventListener('click',()=>{document.body.classList.toggle('dark');localStorage.setItem('notes-theme',document.body.classList.contains('dark')?'dark':'light');});
+    if(localStorage.getItem('notes-theme')==='dark')document.body.classList.add('dark');
+    render();
+  </script>
+</body>
+</html>
