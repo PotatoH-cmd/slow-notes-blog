@@ -156,5 +156,66 @@
     if(localStorage.getItem('notes-theme')==='dark')document.body.classList.add('dark');
     render();
   </script>
+<script>
+(async function loadNotionPosts() {
+  try {
+    const response = await fetch('./notion-posts.json');
+    if (!response.ok) return;
+    const data = await response.json();
+    if (!Array.isArray(data)) return;
+    posts.splice(0, posts.length, ...data.map(post => ({
+      date: String(post.date || ''), title: String(post.title || ''), summary: String(post.summary || ''),
+      tags: Array.isArray(post.tags) ? post.tags.map(String) : [],
+      body: Array.isArray(post.body) ? post.body.map(String) : []
+    })));
+    render = function() {
+      const query = search.value.trim().toLowerCase();
+      const year = yearFilter.value;
+      const filtered = posts.filter(post => (year === 'all' || post.date.startsWith(year)) && (!query || [post.title, post.summary, ...post.tags].join(' ').toLowerCase().includes(query)));
+      list.replaceChildren();
+      filtered.forEach(post => {
+        const item = document.createElement('li'); item.className = 'post'; item.tabIndex = 0; item.setAttribute('role', 'button');
+        item.dataset.date = post.date; item.dataset.title = post.title;
+        const date = document.createElement('div'); date.className = 'post-date'; date.textContent = formatDate(post.date);
+        const wrap = document.createElement('div'); wrap.className = 'post-title-wrap';
+        const title = document.createElement('div'); title.className = 'post-title'; title.textContent = post.title;
+        const summary = document.createElement('div'); summary.className = 'post-summary'; summary.textContent = post.summary;
+        const meta = document.createElement('div'); meta.className = 'post-meta';
+        post.tags.forEach(tag => { const label = document.createElement('span'); label.className = 'tag'; label.textContent = '# ' + tag; meta.append(label); });
+        wrap.append(title, summary, meta);
+        const arrow = document.createElement('span'); arrow.className = 'post-arrow'; arrow.textContent = '↗';
+        item.append(date, wrap, arrow); list.append(item);
+      });
+      const yearsNow = [...new Set(posts.map(post => post.date.slice(0, 4)))].sort((a, b) => b.localeCompare(a));
+      const selectedYear = yearFilter.value;
+      yearFilter.replaceChildren();
+      const allYears = document.createElement('option'); allYears.value = 'all'; allYears.textContent = '全部年份'; yearFilter.append(allYears);
+      yearsNow.forEach(value => { const option = document.createElement('option'); option.value = value; option.textContent = value; yearFilter.append(option); });
+      yearFilter.value = yearsNow.includes(selectedYear) ? selectedYear : 'all';
+      yearLinks.replaceChildren();
+      yearsNow.forEach(value => {
+        const button = document.createElement('button'); button.className = 'year-link'; button.dataset.year = value;
+        const name = document.createElement('span'); name.className = 'year-name'; name.textContent = value;
+        const total = document.createElement('span'); total.className = 'year-total'; total.textContent = String(posts.filter(post => post.date.startsWith(value)).length).padStart(2, '0');
+        button.append(name, total); yearLinks.append(button);
+      });
+      const visible = posts.filter(post => (yearFilter.value === 'all' || post.date.startsWith(yearFilter.value)) && (!query || [post.title, post.summary, ...post.tags].join(' ').toLowerCase().includes(query)));
+      document.getElementById('visibleCount').textContent = String(visible.length).padStart(2, '0');
+      document.getElementById('emptyState').style.display = visible.length ? 'none' : 'block';
+      document.querySelectorAll('.year-link').forEach(button => button.classList.toggle('active', button.dataset.year === yearFilter.value));
+      document.getElementById('heroCount').textContent = String(posts.length).padStart(2, '0');
+    };
+    openPost = function(post) {
+      document.getElementById('modalTitle').textContent = post.title;
+      document.getElementById('modalDate').textContent = post.date + ' · ' + post.tags.join(' / ');
+      document.getElementById('modalNumber').textContent = String(posts.indexOf(post) + 1).padStart(2, '0');
+      const body = document.getElementById('modalBody'); body.replaceChildren();
+      post.body.forEach((text, index) => { const block = document.createElement(index === 1 && post.body.length > 2 ? 'blockquote' : 'p'); block.textContent = text; body.append(block); });
+      document.getElementById('modalBackdrop').classList.add('open'); document.body.style.overflow = 'hidden'; document.getElementById('closeModal').focus();
+    };
+    render();
+  } catch (error) { console.error('Notion articles could not be loaded.', error); }
+})();
+</script>
 </body>
 </html>
